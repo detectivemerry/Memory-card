@@ -1,0 +1,34 @@
+/* .card_container {
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: lightyellow;
+} */
+
+
+.image{
+    flex:0.8;
+    display: flex;
+    justify-content: center;
+    height:auto;
+    width: 100%;
+}
+
+.image img{
+    /* max-height: 100%; */
+    background-color: darkgreen;
+    flex:1;
+    height:250px;
+    max-width: 100%;
+}
+
+.image_name{
+    flex:0.2;
+    text-align: center;
+    color: darkred;
+    padding-top: 10%;
+    padding-bottom: 10%;
+}
+

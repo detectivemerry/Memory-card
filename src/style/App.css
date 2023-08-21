@@ -1,0 +1,26 @@
+body{
+    background-image: url('../assets/adventure_time_background.jpeg');
+}
+
+.card_content {
+    margin: 5%;
+    display : flex;
+    flex-direction: column;
+    height: 70vh;
+    width: auto;
+}
+
+.card_row{
+    display: flex;
+    flex:1;
+}
+
+.card {
+    flex:1;
+    box-sizing: border-box;
+    border: 2px solid yellowgreen;
+}
+
+.scoreboard{
+    text-align: center;
+}
