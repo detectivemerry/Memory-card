@@ -8,22 +8,21 @@ function App() {
   const [cardData, setCardData] = useState([])
   const [score, setScore] = useState(null)
   const [selectedCards, setSelectedCards] = useState([])
-
-  const [{newGame}, {loseGame}, {selectCard}, {winGame}] = scoreBoardMessagesData
-  const [gameStatus, setGameStatus] = useState(newGame)
+  const [{loseGame}, {selectCard}, {winGame}] = scoreBoardMessagesData
+  const [gameStatus, setGameStatus] = useState("Playing") // Playing, Won, Lost
+  const gamePoint = 12
 
   //API call to retrieve images on first render
   let isLoaded = false
-  
   useEffect(()=>{
-      !isLoaded && card_names.map((card_name, idx)=>{
+      !isLoaded && card_names.map((card_name)=>{
         fetch(giphyTranslateUrl + card_name.replace(/\s+/g, '%2B'),{mode: 'cors'})
         .then(function(response){
           return response.json()
         })
         .then(function(response){
           setCardData((prevData)=>{
-            return [...prevData, {card_name : card_name, src : response.data.images.original.url, id : idx}]
+            return [...prevData, {card_name : card_name, src : response.data.images.original.url, id : "id" + Math.random().toString(16).slice(2)}]
           })
         })
         .catch(function(error){
@@ -44,6 +43,15 @@ function App() {
     return array
   }
 
+  const restartGame = () => {
+    setScore(() => {
+      return 0;
+    })
+    setSelectedCards(()=>{
+      return []
+    })
+  }
+
   const handleCardClick = (e) => {
     e.preventDefault();
     
@@ -53,20 +61,25 @@ function App() {
         return selectedCard == cardText 
     })){ //if is new card
       setScore((prevScore) => {
-        return prevScore + 1;
+        const newScore = prevScore + 1
+
+        if(newScore == gamePoint){
+          restartGame()
+          setGameStatus("Won")
+        }
+        else{
+          setGameStatus("Playing")
+        }
+
+        return newScore > gamePoint? 1 : newScore;
       })
       setSelectedCards((prevSelectedCards)=>{
         return [...prevSelectedCards, cardText]
       })
     }
     else{ //if card has already been selected
-      setScore(() => {
-        return 0;
-      })
-      setSelectedCards(()=>{
-        return []
-      })
-      
+      restartGame()
+      setGameStatus("Lost")
     }
 
     //randomize card order
@@ -75,45 +88,26 @@ function App() {
     })
   }
 
-  // update scoreboard message
-  useEffect(()=>{
-    switch(score){
-      case null:
-        setGameStatus(newGame)
-        break
-      case 12:
-        setGameStatus(winGame)
-        break
-      case 0:
-        setGameStatus(loseGame)
-        break
-      default:
-        setGameStatus(selectCard)
-        break
-    }
-  },[score])
-
-
   return (
     <>
     <div className = "scoreboard">
-      <p>{gameStatus}</p>
+      <p>{gameStatus == "Playing" ? selectCard : gameStatus == "Won" ? winGame :gameStatus == "Lost" ? loseGame : selectCard }</p>
       Score: {score}
     </div>
     <div className = "card_content">
-      <div className = "card_row">
-      {cardData && cardData.map((data)=>{
-          if(data.id < (cardData.length / 2)){
-            return <div className = "card"><Card key = {data.id} card_name = {data.card_name} src = {data.src} handleCardClick = {handleCardClick}/></div>
-          }
-        })}
+      <div key = {1} className = "card_row">
+        {cardData && cardData.map((data, idx)=>{
+            if(idx < (cardData.length / 2)){
+              return <div key = {data.id}  className = "card"><Card card_name = {data.card_name} src = {data.src} handleCardClick = {handleCardClick}/></div>
+            }
+          })}
       </div>
-      <div className = "card_row">
-      {cardData && cardData.map((data)=>{
-          if(data.id >= (cardData.length / 2)){
-            return <div className = "card"><Card key = {data.id} card_name = {data.card_name} src = {data.src} handleCardClick = {handleCardClick}/></div>
-          }
-        })}
+      <div key = {2} className = "card_row">
+        {cardData && cardData.map((data, idx)=>{
+            if(idx >= (cardData.length / 2)){
+              return <div key = {data.id} className = "card"><Card card_name = {data.card_name} src = {data.src} handleCardClick = {handleCardClick}/></div>
+            }
+          })}
       </div>
 
     </div>

@@ -4,12 +4,12 @@ import '../style/Card.css'
 export default function Card({card_name, src, handleCardClick}){
     const [cardColor, setCardColor] = useState("lightyellow"); 
     const style = {
-        'box-sizing': 'border-box',
+        'boxSizing': 'border-box',
         'height': '100%',
         'width': '100%',
         'display': 'flex',
-        'flex-direction': 'column',
-        'background-color': cardColor
+        'flexDirection': 'column',
+        'backgroundColor': cardColor
     }
 
     return(
